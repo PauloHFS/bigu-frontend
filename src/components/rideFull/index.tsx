@@ -2,7 +2,7 @@ import { AuthContext } from "@/context/AuthContext";
 import { fetchUserAddresses } from "@/services/address";
 import { requestRide } from "@/services/ride";
 import { AddressResponseDTO, RequestRide, UserResponseDTO } from "@/types/ride";
-import { formatarData, formatDateRide } from "@/utils/masks";
+import { formatarData } from "@/utils/masks";
 import Image from "next/image";
 import React, { useContext, useEffect } from "react";
 import { toast } from "react-toastify";
@@ -60,9 +60,12 @@ function RideFull(props: RideProps) {
     } else if (props.toWoman && userSex == "Masculino") {
       toast.info("Essa carona é exclusiva para mulheres.");
       return;
-    } else
-    setModalOpen((prev) => !prev);
+    } else setModalOpen((prev) => !prev);
     setRideIdSelected(rideId);
+  };
+
+  const handleChatWithDriver = () => {
+    Router.push(`/chat?rideId=${props.id}&senderId=${user?.userId}`);
   };
 
   const submitRide = async () => {
@@ -88,7 +91,10 @@ function RideFull(props: RideProps) {
   return (
     <div className="bg-light-white w-full h-42 rounded-xl flex p-4 flex-col gap-4 sm:p-5">
       <div className="flex justify-between">
-        <div onClick={() => handleViewProfile(props.driver.userId)} className="flex gap-2 sm:gap-4 items-center">
+        <div
+          onClick={() => handleViewProfile(props.driver.userId)}
+          className="flex gap-2 sm:gap-4 items-center"
+        >
           <Image className="w-8 h-8 md:w-12 md:h-12" src={Avatar} alt="foto" />
           <div className="flex flex-col gap-1">
             <div className="flex gap-3 items-center">
@@ -97,7 +103,9 @@ function RideFull(props: RideProps) {
 
                 <span
                   className={`cursor-pointer hover:text-blue-500 ${
-                    props.driver.userId === user?.userId ? "cursor-default hover:text-gray-700" : ""
+                    props.driver.userId === user?.userId
+                      ? "cursor-default hover:text-gray-700"
+                      : ""
                   }`}
                   onClick={() => {
                     if (props.driver.userId !== user?.userId) {
@@ -105,7 +113,9 @@ function RideFull(props: RideProps) {
                     }
                   }}
                 >
-                  {props.driver.userId !== user?.userId ? props.driver.name.split(" ")[0] : "Você"}
+                  {props.driver.userId !== user?.userId
+                    ? props.driver.name.split(" ")[0]
+                    : "Você"}
                 </span>
                 {/* {props.driver.name.split(" ")[0]} */}
               </h1>
@@ -144,8 +154,16 @@ function RideFull(props: RideProps) {
           </div>
         </div>
 
-        <div className="flex gap-8 md:relative bottom-8">
-          <div className="self-end md:self-center">
+        <div className="flex gap-2 md:relative bottom-8">
+          <div className="flex flex-col self-end md:self-center gap-2">
+            <Button
+              label={"Chat"}
+              onClick={() => handleChatWithDriver()}
+              size="xs"
+              color="green"
+              shape="square"
+              className="sm:w-36 sm:h-10 sm:px-3 md:w-48 md:h-12 md:px-8 md:text-base"
+            />
             {!askRide ? (
               <Button
                 label={!askRide ? "Pedir carona" : "Aguardando confirmação..."}

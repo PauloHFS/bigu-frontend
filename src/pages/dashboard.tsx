@@ -20,6 +20,8 @@ import { useRouter } from "next/router";
 import { getAllRidesAvailable, getMyRidesAvailable, getRideHistory } from "@/services/ride";
 import { RideResponseDTO } from "@/types/ride";
 import { toast } from "react-toastify";
+import Intro from "@/components/map";
+import Head from 'next/head';
 
 function Dashboard() {
   const router = useRouter();
@@ -32,6 +34,9 @@ function Dashboard() {
   const [firstDashboardAccess, setFirstDashboardAccess] = useState(first);
   const [ridesAvailable, setRidesAvailable] = useState<RideResponseDTO[]>([]);
   const [myRides, setMyRides] = useState<RideResponseDTO[]>([]);
+
+  const origin = 'Rua jose mamede de souza, 63';
+  const destination = 'ufcg';
 
   const [loadingStateRides, setLoadingStateRides] = useState<boolean>(true);
   const [loadingStateHistory, setLoadingStateHistory] = useState<boolean>(true);
@@ -84,7 +89,7 @@ function Dashboard() {
           </div>
         ) : (
           <div className="flex items-center gap-1">
-            <h1 className="font-[Poppins] text-xl font-bold text-white sm:text-2xl md:text-3xl lg:text-4xl mr-2">
+            <h1 className="font-[Poppins] text-3xl font-bold text-white sm:text-4xl md:text-5xl lg:text-6xl mr-2">
               {`Olá, ${user?.name.split(" ")[0]}`}
             </h1>
             <div className="flex items-center gap-2">
@@ -160,6 +165,12 @@ function Dashboard() {
         firstAccess()
       ) : (
         <>
+          {/* <Head>
+            <script
+              type="text/javascript"
+              src="http://maps.googleapis.com/maps/api/js?key=AIzaSyAypS4QQbX6rnHntFda-rNxXDbO0aCOUN4&"
+            ></script>
+          </Head> */}
           <div className="max-w-[90%] mx-auto flex flex-col gap-9">
             <Header
               handleOpenRequests={handleOpenRequests}

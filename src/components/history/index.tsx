@@ -30,7 +30,7 @@ function History(props: Props) {
   const { races, loading} = props;
   return (
     <div className="bg-dark w-full h-fit rounded-lg py-6 px-4 flex flex-col lg:mx-0 lg:w-full max-w-[800px]">
-      <h2 className="font-['Poppins'] text-center text-lg text-white font-bold sm:text-xl md:text-2xl">
+      <h2 className="font-['Poppins'] text-center text-2xl text-white font-bold sm:text-xl md:text-2xl">
         Histórico de caronas
       </h2>
       <div

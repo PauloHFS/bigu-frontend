@@ -20,6 +20,7 @@ import { useRouter } from "next/router";
 import { getAllRidesAvailable, getMyRidesAvailable, getRideHistory } from "@/services/ride";
 import { RideResponseDTO } from "@/types/ride";
 import { toast } from "react-toastify";
+import Joyride, { Step, CallBackProps } from "react-joyride";
 
 function Dashboard() {
   const router = useRouter();
@@ -154,25 +155,100 @@ function Dashboard() {
     );
   };
 
+  // Steps for Joyride
+  const steps: Step[] = [
+    {
+      target: ".profile", // CSS selector for the element to highlight
+      content: "Aqui você encontra sua pontuação média, conquistada ao longo da sua jornada no Bigu!",
+      disableBeacon: true
+    },
+    {
+      target: ".history-section", // Assuming this class is applied to the History component
+      content: "Este é o seu histórico de corridas, incluindo as que você participou e as que ofereceu!",
+      disableBeacon: true
+    },
+    {
+      target: ".rides-available", // Assuming this class is applied to the Ride component
+      content: "Estas são as corridas disponíveis no momento. Clique em 'Ver mais' para explorar mais opções e filtrá-las conforme sua preferência.",
+      disableBeacon: true
+    },
+    {
+      target: ".header-actions", // Assuming this class is applied to Header actions
+      content: "No canto superior direito, você pode configurar sua foto de perfil, acessar suas informações e editá-las. Já no canto superior esquerdo, é possível buscar ajuda, oferecer uma carona, visualizar as solicitações recebidas e acessar dados das caronas que você está oferecendo!",
+      disableBeacon: true
+    },
+    {
+      target: ".info-Botton", // Assuming this class is applied to Header actions
+      content: "Por fim, no botão abaixo, você pode revisitar este tutorial sempre que precisar. Estamos aqui para ajudar :)",
+      disableBeacon: true
+    },
+  ];
+
+  const [showGuide, setShowGuide] = useState(false);
+
+
+  const handleJoyrideCallback = (data: CallBackProps) => {
+    const { status } = data;
+    const finishedStatuses = ["finished", "skipped"];
+    if (finishedStatuses.includes(status)) {
+      setShowGuide(false); // Hide guide after it finishes
+    }
+  };
+
+
+
   return (
     <div className="relative w-full my-16 max-w-[1920px] mx-auto">
       {firstDashboardAccess ? (
         firstAccess()
       ) : (
         <>
-          <div className="max-w-[90%] mx-auto flex flex-col gap-9">
-            <Header
-              handleOpenRequests={handleOpenRequests}
-              handleOpenRides={handleOpenRides}
-              hasCandidates={myRides.some((ride) => ride.candidates.length > 0)}
+        
+          {showGuide && (
+              <Joyride
+              steps={steps} 
+              continuous
+              showSkipButton
+              // showProgress
+              run={showGuide}
+              callback={handleJoyrideCallback}
+              styles={{
+                options: {
+                  zIndex: 10000,
+                },
+              }}
+              locale={{
+                back: "Voltar",
+                close: "Fechar",
+                last: "Finalizar",
+                next: "Próximo",
+                open: 'Abrir',
+                skip: "Pular",
+              }}
+              
             />
-            <div className="flex justify-between items-center">
+          )}
+        
+          {/* Conteúdo do Dashboard */}
+          <div className="max-w-[90%] mx-auto flex flex-col gap-9">
+            <div className="header-actions">
+              <Header
+                handleOpenRequests={handleOpenRequests}
+                handleOpenRides={handleOpenRides}
+                hasCandidates={myRides.some((ride) => ride.candidates.length > 0)}
+              />
+            </div>
+            <div className="profile flex justify-between items-center">
               {renderGreeting()}
             </div>
             <div className="flex flex-col-reverse justify-between gap-2 sm:gap-12 lg:gap-12 lg:flex-row">
-              <History races={history} loading={loadingStateHistory} />
+              <div className="history-section w-full">
+                <History races={history} loading={loadingStateHistory} />
+              </div>
               <div className="border-solid border-[1px] border-warmGray-700"></div>
-              <Ride ridesAvailable={ridesAvailable} loadDataRidesAvailable={loadDataRidesAvailable} loading={loadingStateRides}/>
+              <div className="rides-available w-full">
+                <Ride ridesAvailable={ridesAvailable} loadDataRidesAvailable={loadDataRidesAvailable} loading={loadingStateRides}/>
+              </div>
             </div>
           </div>
           <RidesRequests
@@ -182,6 +258,13 @@ function Dashboard() {
             setMyRides={setMyRides}
           />
           <RidesOffers handleClose={handleCloseRides} visible={showRides} loadDataRidesAvailable={loadDataRidesAvailable}/>
+          <button
+            className="info-Botton fixed bottom-4 left-4 w-12 h-12 rounded-full bg-blue-500 text-white flex items-center justify-center shadow-lg hover:bg-blue-600 focus:outline-none"
+            onClick={() => setShowGuide(true)}
+            title="Iniciar Guia"
+          >
+            ?
+          </button>
         </>
       )}
     </div>

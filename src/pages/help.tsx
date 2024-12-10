@@ -17,9 +17,10 @@ const Ajuda = () => {
             </div>
           ))}
         </div>
-        <div className="mt-8 text-center">
+        <div className="mt-8 flex justify-center">
           <a
-            className="bg-light-blue text-white py-3 px-6 rounded-lg text-lg font-medium font-[Poppins]"
+             className="bg-light-blue text-white py-3 px-6 rounded-lg text-lg font-medium font-[Poppins] hover:bg-light-blue-dark transition-colors flex justify-center items-center sm:text-center"
+             style={{ position: 'relative', bottom: 'unset', margin: 'auto', textAlign:'center' }}
           >
             Ainda tem mais alguma dúvida? Contate nosso Suporte, clicando aqui!
           </a>
